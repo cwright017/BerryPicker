@@ -9,10 +9,11 @@ import org.tribot.api2007.types.RSInterface;
 import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Painting;
-import org.tribot.script.interfaces.Starting;
 import scripts.Nodes.*;
 import scripts.Utils.Constants;
-import scripts.Utils.Utils;
+import scripts.dax_api.api_lib.DaxWalker;
+import scripts.dax_api.api_lib.models.DaxCredentials;
+import scripts.dax_api.api_lib.models.DaxCredentialsProvider;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -35,12 +36,12 @@ public class Main extends Script implements Painting {
     public void run() {
         startTime = Timing.currentTimeMillis();
 
-//        DaxWalker.setCredentials(new DaxCredentialsProvider() {
-//            @Override
-//            public DaxCredentials getDaxCredentials() {
-//                return new DaxCredentials("sub_DPjcfqN4YkIxm8", "PUBLIC-KEY");
-//            }
-//        });
+        DaxWalker.setCredentials(new DaxCredentialsProvider() {
+            @Override
+            public DaxCredentials getDaxCredentials() {
+                return new DaxCredentials("sub_DPjXXzL5DeSiPf", "PUBLIC-KEY");
+            }
+        });
 
         Collections.addAll(
             Nodes,
@@ -84,10 +85,12 @@ public class Main extends Script implements Painting {
         Font font = new Font("Verdana", Font.BOLD, 12);
 
         RSInterface chat = Interfaces.get(162, 59);
-        if (chat != null) {
-            paintX += chat.getAbsoluteBounds().getX();
-            paintY += chat.getAbsoluteBounds().getY();
+        if (chat == null) {
+            return;
         }
+
+        paintX += chat.getAbsoluteBounds().getX();
+        paintY += chat.getAbsoluteBounds().getY();
 
         gg.setColor(Constants.PAINT_BG_COLOR);
         gg.fillRect(paintX, paintY, chat.getAbsoluteBounds().width, chat.getAbsoluteBounds().height);
