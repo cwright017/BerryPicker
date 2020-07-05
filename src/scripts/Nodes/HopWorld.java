@@ -1,5 +1,7 @@
 package scripts.Nodes;
 
+import org.tribot.api.General;
+import org.tribot.api.Timing;
 import org.tribot.api2007.Inventory;
 import org.tribot.api2007.WorldHopper;
 import scripts.Utils.Utils;
@@ -7,7 +9,7 @@ import scripts.Utils.Utils;
 public class HopWorld extends Node {
     @Override
     public boolean validate() {
-        return Utils.isInBushArea() && Utils.getBushes().length == 0 && !Inventory.isFull();
+        return Utils.isInBushArea() && Utils.getBushes().length == 0;
     }
 
     @Override
@@ -20,5 +22,7 @@ public class HopWorld extends Node {
         }
 
         WorldHopper.changeWorld(world);
+
+        Timing.waitCondition(() -> WorldHopper.getWorld() != currentWorld, General.random(5000, 8000));
     }
 }

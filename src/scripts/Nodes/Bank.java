@@ -1,6 +1,9 @@
 package scripts.Nodes;
 
+import com.sun.tools.javah.Gen;
 import org.tribot.api.DynamicClicking;
+import org.tribot.api.General;
+import org.tribot.api.Timing;
 import org.tribot.api2007.Banking;
 import org.tribot.api2007.Inventory;
 import org.tribot.api2007.types.RSObject;
@@ -19,10 +22,9 @@ public class Bank extends Node {
         if(Banking.isBankScreenOpen()) {
             Banking.depositAll();
 
-            if(!Inventory.isFull()) {
-                Banking.close();
+            if(!Timing.waitCondition(() -> Inventory.isFull(), General.random(3000, 4000))) {
+                return;
             }
-            return;
         }
 
         if (!DynamicClicking.clickRSObject(booth, "Bank")) {

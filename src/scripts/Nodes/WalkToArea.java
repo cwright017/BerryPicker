@@ -2,7 +2,6 @@ package scripts.Nodes;
 
 import org.tribot.api.General;
 import org.tribot.api.Timing;
-import org.tribot.api.types.generic.Condition;
 import org.tribot.api2007.Banking;
 import org.tribot.api2007.Inventory;
 import org.tribot.api2007.WebWalking;
@@ -12,7 +11,11 @@ import scripts.Utils.Utils;
 public class WalkToArea extends Node {
 
     private boolean shouldBank() {
-        return Inventory.isFull();
+        return Inventory.isFull() && !Banking.isInBank();
+    }
+
+    private boolean shouldWalkToBush() {
+        return !Inventory.isFull() && !Utils.isInBushArea();
     }
 
     private boolean walkToBank() {
@@ -20,12 +23,7 @@ public class WalkToArea extends Node {
             return false;
         }
 
-        return Timing.waitCondition(new Condition() { // If we reach the bank before the timeout, this method will return
-            @Override public boolean active() {
-                General.sleep(200, 300); // Reduces CPU usage.
-                return Banking.isInBank();
-            }
-        }, General.random(8000, 9000));
+        return Timing.waitCondition(() -> Banking.isInBank(), General.random(8000, 9000));
     }
 
     private boolean walkToBushes() {
@@ -33,12 +31,7 @@ public class WalkToArea extends Node {
             return false;
         }
 
-        return Timing.waitCondition(new Condition() { // If we reach the bank before the timeout, this method will return
-            @Override public boolean active() {
-                General.sleep(200, 300); // Reduces CPU usage.
-                return Utils.isInBushArea();
-            }
-        }, General.random(8000, 9000));
+        return Timing.waitCondition(() -> Utils.isInBushArea(), General.random(8000, 9000));
     }
 
     @Override
@@ -47,7 +40,11 @@ public class WalkToArea extends Node {
             return true; // Should bank.
         }
 
-        return !Utils.isInBushArea(); // Player isn't in bush area
+        if (shouldWalkToBush()) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
