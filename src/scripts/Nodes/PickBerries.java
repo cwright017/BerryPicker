@@ -12,6 +12,7 @@ import scripts.Utils.Utils;
 
 public class PickBerries extends Node {
     public static int berriesPicked = 0;
+    public static int berriesInInv = 0;
 
     @Override
     public boolean validate() {
@@ -44,6 +45,8 @@ public class PickBerries extends Node {
         Timing.waitCondition(() -> {
             RSItem[] berries = Inventory.find(Constants.CADAVA_BERRY);
             if (berries != null) {
+                berriesInInv = berries.length;
+
                 return berries.length > initialBerriesInInv.length;
             }
 

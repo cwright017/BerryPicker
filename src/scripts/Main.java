@@ -15,7 +15,11 @@ import scripts.dax_api.api_lib.DaxWalker;
 import scripts.dax_api.api_lib.models.DaxCredentials;
 import scripts.dax_api.api_lib.models.DaxCredentialsProvider;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -69,6 +73,8 @@ public class Main extends Script implements Painting {
         }
     }
 
+    private final BufferedImage img = getImage("https://i.imgur.com/ltFaqsE.png");
+
     @Override
     public void onPaint(Graphics gg)
     {
@@ -78,6 +84,8 @@ public class Main extends Script implements Painting {
 
         Graphics2D g = (Graphics2D) gg;
         g.setRenderingHints(aa);
+
+        General.println("Drawing: " + img);
 
         int paintY = 0;
         int paintX = 0;
@@ -89,22 +97,41 @@ public class Main extends Script implements Painting {
             return;
         }
 
+
         paintX += chat.getAbsoluteBounds().getX();
         paintY += chat.getAbsoluteBounds().getY();
 
-        gg.setColor(Constants.PAINT_BG_COLOR);
-        gg.fillRect(paintX, paintY, chat.getAbsoluteBounds().width, chat.getAbsoluteBounds().height);
+        g.setColor(new Color(0,0, 0, 60));
+        g.fillRect(paintX, 45, 100, 35);
+        g.drawImage(img, paintX + 10, 50, 25, 25, null);
 
-        gg.setColor(Constants.PAINT_COLOR);
-        gg.setFont(font);
+        g.setColor(Color.WHITE);
+        g.drawString("" + (Bank.totalBerries + PickBerries.berriesInInv), paintX + 45, 70 );
 
-        gg.drawString("Cadava Picker", paintX, paintY += paintYGap);
-        gg.drawString("Time Ran: " + Timing.msToString(Timing.currentTimeMillis() - startTime), paintX, paintY += paintYGap);
-        gg.drawString("Berries picked: " + PickBerries.berriesPicked , paintX, paintY += paintYGap);
-        gg.drawString("Berries picked per hour: " + perHour(PickBerries.berriesPicked), paintX, paintY += paintYGap);
+        g.setColor(Constants.PAINT_BG_COLOR);
+        g.fillRect(paintX, paintY, chat.getAbsoluteBounds().width, chat.getAbsoluteBounds().height);
+
+        g.drawImage(img, paintX + chat.getAbsoluteBounds().width - 110, paintY + 5, 100, 100, null);
+        g.setColor(Constants.PAINT_COLOR);
+        g.setFont(font);
+
+        g.drawString("Cadava Picker", paintX, paintY += paintYGap);
+        g.drawString("Time Ran: " + Timing.msToString(Timing.currentTimeMillis() - startTime), paintX, paintY += paintYGap);
+        g.drawString("Berries picked: " + PickBerries.berriesPicked , paintX, paintY += paintYGap);
+        g.drawString("Berries picked per hour: " + perHour(PickBerries.berriesPicked), paintX, paintY += paintYGap);
     }
 
     private String perHour(int gained) {
         return (((int) ((gained) * 3600000D / (System.currentTimeMillis() - startTime))) + "");
+    }
+
+    public BufferedImage getImage(String name) {
+        try {
+            General.println("Loading image: " + name);
+            return ImageIO.read(new URL(name));
+        } catch (IOException e) {
+            General.println(name + " not loaded. ");
+        }
+        return null;
     }
 }
