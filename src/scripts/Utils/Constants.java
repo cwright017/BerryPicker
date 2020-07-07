@@ -16,6 +16,7 @@ public class Constants {
 
     public static final int CADAVA_BERRY = 753;
 
+    public static final String CADAVA_BERRY_SRC = "https://i.imgur.com/ltFaqsE.png";
     public static final Color PAINT_COLOR = new Color(207,56,178);
     public static final Color PAINT_BG_COLOR = new Color(187,169,137);
 }

@@ -2,9 +2,7 @@ package scripts;
 
 import org.tribot.api.General;
 import org.tribot.api.Timing;
-import org.tribot.api2007.Game;
 import org.tribot.api2007.Interfaces;
-import org.tribot.api2007.Login;
 import org.tribot.api2007.types.RSInterface;
 import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
@@ -30,11 +28,14 @@ import java.util.Collections;
 @ScriptManifest(authors = "CWright", name = "Cadava Picker", category = "Gathering")
 public class Main extends Script implements Painting {
     private ArrayList<Node> Nodes = new ArrayList<>();
-    private int gameState = Game.getSetting(281);
     private final RenderingHints aa = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    private boolean hasStarted = false;
 
     private long startTime = 0;
+
+    private double chatX = 0;
+    private double chatY = 0;
+    private double chatWidth = 0;
+    private double chatHeight = 0;
 
     @Override
     public void run() {
@@ -64,7 +65,6 @@ public class Main extends Script implements Painting {
 
     private void loop() {
         for (final Node node: Nodes) {
-            gameState = Game.getSetting(281);
             if (node.validate()) {
                 node.printStatus();
                 node.execute();
@@ -73,23 +73,14 @@ public class Main extends Script implements Painting {
         }
     }
 
-    private final BufferedImage img = getImage("https://i.imgur.com/ltFaqsE.png");
+    private final BufferedImage img = getImage(Constants.CADAVA_BERRY_SRC);
 
     @Override
     public void onPaint(Graphics gg)
     {
-        if(Login.getLoginState() != Login.STATE.INGAME) {
-            return;
-        }
-
         Graphics2D g = (Graphics2D) gg;
         g.setRenderingHints(aa);
 
-        General.println("Drawing: " + img);
-
-        int paintY = 0;
-        int paintX = 0;
-        int paintYGap = 25;
         Font font = new Font("Verdana", Font.BOLD, 12);
 
         RSInterface chat = Interfaces.get(162, 59);
@@ -97,10 +88,16 @@ public class Main extends Script implements Painting {
             return;
         }
 
+        chatX = chat.getAbsoluteBounds().getX();
+        chatY = chat.getAbsoluteBounds().getY();
+        chatWidth = chat.getAbsoluteBounds().getWidth();
+        chatHeight = chat.getAbsoluteBounds().getHeight();
 
-        paintX += chat.getAbsoluteBounds().getX();
-        paintY += chat.getAbsoluteBounds().getY();
+        int paintY = (int) chatY;
+        int paintX = (int) chatX;
+        int paintYGap = 25;
 
+        // Draw banked items
         g.setColor(new Color(0,0, 0, 60));
         g.fillRect(paintX, 45, 100, 35);
         g.drawImage(img, paintX + 10, 50, 25, 25, null);
@@ -108,15 +105,17 @@ public class Main extends Script implements Painting {
         g.setColor(Color.WHITE);
         g.drawString("" + (Bank.totalBerries + PickBerries.berriesInInv), paintX + 45, 70 );
 
+        // Draw chat BG
         g.setColor(Constants.PAINT_BG_COLOR);
-        g.fillRect(paintX, paintY, chat.getAbsoluteBounds().width, chat.getAbsoluteBounds().height);
+        g.fillRect(paintX, paintY, (int) chatWidth, (int) chatHeight);
 
-        g.drawImage(img, paintX + chat.getAbsoluteBounds().width - 110, paintY + 5, 100, 100, null);
+        // Draw paint
+        g.drawImage(img, paintX + (int) chatWidth - 110, paintY + 5, 100, 100, null);
         g.setColor(Constants.PAINT_COLOR);
         g.setFont(font);
 
         g.drawString("Cadava Picker", paintX, paintY += paintYGap);
-        g.drawString("Time Ran: " + Timing.msToString(Timing.currentTimeMillis() - startTime), paintX, paintY += paintYGap);
+        g.drawString("Runtime: " + Timing.msToString(Timing.currentTimeMillis() - startTime), paintX, paintY += paintYGap);
         g.drawString("Berries picked: " + PickBerries.berriesPicked , paintX, paintY += paintYGap);
         g.drawString("Berries picked per hour: " + perHour(PickBerries.berriesPicked), paintX, paintY += paintYGap);
     }
