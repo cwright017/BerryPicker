@@ -1,6 +1,5 @@
 package scripts.Nodes;
 
-import com.sun.tools.javah.Gen;
 import org.tribot.api.DynamicClicking;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
@@ -16,7 +15,7 @@ public class Bank extends Node {
 
     @Override
     public boolean validate() {
-        return Utils.isInBank() && Inventory.isFull();
+        return Banking.isInBank() && Inventory.isFull();
     }
 
     @Override

@@ -17,15 +17,5 @@ public class Utils {
 
     public static RSObject[] getBankBooths() {
         return Objects.findNearest(20, "Bank booth");
-
-    }
-    public static boolean isInBank() {
-        final RSObject[] booths = getBankBooths();
-
-        if(booths.length > 1) {
-            return booths[0].isOnScreen();
-        }
-
-        return false;
     }
 }
