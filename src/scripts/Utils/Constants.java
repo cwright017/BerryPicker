@@ -14,9 +14,15 @@ public class Constants {
     public static final int bushID2 = 23625;
     public static final int bushID1 = 23626;
 
+    public static final int REDBERRRY_BUSH_2 = 23628;
+    public static final int REDBERRRY_BUSH_1 = 23629;
+
     public static final int CADAVA_BERRY = 753;
+    public static final int REDBERRY = 1951;
 
     public static final String CADAVA_BERRY_SRC = "https://i.imgur.com/ltFaqsE.png";
+    public static final String REDBERRY_SRC = "https://i.imgur.com/Uhm2Oyf.png";
+
     public static final Color PAINT_COLOR = new Color(207,56,178);
     public static final Color PAINT_BG_COLOR = new Color(187,169,137);
 }
