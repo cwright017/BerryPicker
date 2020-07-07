@@ -8,7 +8,7 @@ public class Utils {
     public static RSObject[] getBushes() {
         return Objects.findNearest(
                 5,
-                (cadava -> (cadava.getID() == Constants.bushID2 || cadava.getID() == Constants.bushID1)));
+                (cadava -> (cadava.getID() == Constants.CADAVA_BERRY_BUSH_2 || cadava.getID() == Constants.CADAVA_BERRY_BUSH_1)));
     }
 
     public static boolean isInBushArea() {

@@ -7,12 +7,12 @@ import java.awt.*;
 
 public class Constants {
     public static final RSArea bushArea = new RSArea(
-            new RSTile(3264, 3371, 0),
-            new RSTile(3271, 3367, 0)
+            new RSTile(3268, 3375, 0),
+            new RSTile(3278, 3366, 0)
     );
 
-    public static final int bushID2 = 23625;
-    public static final int bushID1 = 23626;
+    public static final int CADAVA_BERRY_BUSH_2 = 23625;
+    public static final int CADAVA_BERRY_BUSH_1 = 23626;
 
     public static final int REDBERRRY_BUSH_2 = 23628;
     public static final int REDBERRRY_BUSH_1 = 23629;
