@@ -7,22 +7,24 @@ import org.tribot.api2007.Inventory;
 import org.tribot.api2007.WebWalking;
 import org.tribot.api2007.types.RSItem;
 import org.tribot.api2007.types.RSObject;
-import scripts.Utils.Constants;
-import scripts.Utils.Utils;
+import scripts.Berry;
 
 public class PickBerries extends Node {
-    public static int berriesPicked = 0;
-    public static int berriesInInv = 0;
+    private Berry berry;
+
+    public PickBerries(Berry berry) {
+        this.berry = berry;
+    }
 
     @Override
     public boolean validate() {
-        return Utils.isInBushArea() && Utils.getBushes().length > 0;
+        return berry.isInBushArea() && berry.getBushes().length > 0;
     }
 
     @Override
     public void execute() {
-        RSObject[] bushes = Utils.getBushes();
-        RSItem[] initialBerriesInInv = Inventory.find(Constants.CADAVA_BERRY);
+        RSObject[] bushes = berry.getBushes();
+        RSItem[] initialBerriesInInv = Inventory.find(berry.ID);
 
         if(bushes.length < 1) {
             return; // No bushes found.
@@ -43,9 +45,9 @@ public class PickBerries extends Node {
         }
 
         Timing.waitCondition(() -> {
-            RSItem[] berries = Inventory.find(Constants.CADAVA_BERRY);
+            RSItem[] berries = Inventory.find(berry.ID);
             if (berries != null) {
-                berriesInInv = berries.length;
+                berry.totalInInv = berries.length;
 
                 return berries.length > initialBerriesInInv.length;
             }
@@ -53,9 +55,9 @@ public class PickBerries extends Node {
             return false;
         }, General.random(3000, 6000));
 
-        RSItem[] finalBerriesInInv = Inventory.find(Constants.CADAVA_BERRY);
+        RSItem[] finalBerriesInInv = Inventory.find(berry.ID);
         if (finalBerriesInInv != null && initialBerriesInInv != null) {
-            berriesPicked += finalBerriesInInv.length - initialBerriesInInv.length;
+            berry.totalCollected += finalBerriesInInv.length - initialBerriesInInv.length;
         }
     }
 }

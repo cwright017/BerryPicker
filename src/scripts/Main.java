@@ -37,6 +37,8 @@ public class Main extends Script implements Painting {
     private double chatWidth = 0;
     private double chatHeight = 0;
 
+    private Berry berry = new Berry(Constants.Berries.REDBERRY);
+
     @Override
     public void run() {
         startTime = Timing.currentTimeMillis();
@@ -52,10 +54,10 @@ public class Main extends Script implements Painting {
             Nodes,
             new Setup(),
             new LoginUser(),
-            new Bank(),
-            new PickBerries(),
-            new WalkToArea(),
-            new HopWorld()
+            new Bank(berry),
+            new PickBerries(berry),
+            new WalkToArea(berry),
+            new HopWorld(berry)
         );
 
         while(true) {
@@ -73,7 +75,7 @@ public class Main extends Script implements Painting {
         }
     }
 
-    private final BufferedImage img = getImage(Constants.CADAVA_BERRY_SRC);
+    private final BufferedImage img = getImage(berry.SRC);
 
     @Override
     public void onPaint(Graphics gg)
@@ -103,7 +105,7 @@ public class Main extends Script implements Painting {
         g.drawImage(img, paintX + 10, 50, 25, 25, null);
 
         g.setColor(Color.WHITE);
-        g.drawString("" + (Bank.totalBerries + PickBerries.berriesInInv), paintX + 45, 70 );
+        g.drawString("" + (berry.totalInBank + berry.totalInInv), paintX + 45, 70 );
 
         // Draw chat BG
         g.setColor(Constants.PAINT_BG_COLOR);
@@ -114,10 +116,10 @@ public class Main extends Script implements Painting {
         g.setColor(Constants.PAINT_COLOR);
         g.setFont(font);
 
-        g.drawString("Cadava Picker", paintX, paintY += paintYGap);
+        g.drawString("Berry Picker", paintX, paintY += paintYGap);
         g.drawString("Runtime: " + Timing.msToString(Timing.currentTimeMillis() - startTime), paintX, paintY += paintYGap);
-        g.drawString("Berries picked: " + PickBerries.berriesPicked , paintX, paintY += paintYGap);
-        g.drawString("Berries picked per hour: " + perHour(PickBerries.berriesPicked), paintX, paintY += paintYGap);
+        g.drawString("Berries picked: " + berry.totalCollected , paintX, paintY += paintYGap);
+        g.drawString("Berries picked per hour: " + perHour(berry.totalCollected), paintX, paintY += paintYGap);
     }
 
     private String perHour(int gained) {

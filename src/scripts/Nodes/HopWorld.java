@@ -2,14 +2,19 @@ package scripts.Nodes;
 
 import org.tribot.api.General;
 import org.tribot.api.Timing;
-import org.tribot.api2007.Inventory;
 import org.tribot.api2007.WorldHopper;
-import scripts.Utils.Utils;
+import scripts.Berry;
 
 public class HopWorld extends Node {
+    private Berry berry;
+
+    public HopWorld(Berry berry) {
+        this.berry = berry;
+    }
+
     @Override
     public boolean validate() {
-        return Utils.isInBushArea() && Utils.getBushes().length == 0;
+        return berry.isInBushArea() && berry.getBushes().length == 0;
     }
 
     @Override
