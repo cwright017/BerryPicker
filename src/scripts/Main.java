@@ -6,6 +6,7 @@ import org.tribot.api2007.Interfaces;
 import org.tribot.api2007.types.RSInterface;
 import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
+import org.tribot.script.interfaces.Arguments;
 import org.tribot.script.interfaces.Painting;
 import scripts.Nodes.*;
 import scripts.Utils.Constants;
@@ -20,13 +21,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * @author CWright
  */
 
 @ScriptManifest(authors = "CWright", name = "Cadava Picker", category = "Gathering")
-public class Main extends Script implements Painting {
+public class Main extends Script implements Painting, Arguments {
     private ArrayList<Node> Nodes = new ArrayList<>();
     private final RenderingHints aa = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -37,10 +39,14 @@ public class Main extends Script implements Painting {
     private double chatWidth = 0;
     private double chatHeight = 0;
 
-    private Berry berry = new Berry(Constants.Berries.REDBERRY);
+    private Berry berry;
 
     @Override
     public void run() {
+        if(berry == null) {
+            return;
+        }
+
         startTime = Timing.currentTimeMillis();
 
         DaxWalker.setCredentials(new DaxCredentialsProvider() {
@@ -75,8 +81,6 @@ public class Main extends Script implements Painting {
         }
     }
 
-    private final BufferedImage img = getImage(berry.SRC);
-
     @Override
     public void onPaint(Graphics gg)
     {
@@ -102,7 +106,7 @@ public class Main extends Script implements Painting {
         // Draw banked items
         g.setColor(new Color(0,0, 0, 60));
         g.fillRect(paintX, 45, 100, 35);
-        g.drawImage(img, paintX + 10, 50, 25, 25, null);
+        g.drawImage(getImage(berry.SRC), paintX + 10, 50, 25, 25, null);
 
         g.setColor(Color.WHITE);
         g.drawString("" + (berry.totalInBank + berry.totalInInv), paintX + 45, 70 );
@@ -112,7 +116,7 @@ public class Main extends Script implements Painting {
         g.fillRect(paintX, paintY, (int) chatWidth, (int) chatHeight);
 
         // Draw paint
-        g.drawImage(img, paintX + (int) chatWidth - 110, paintY + 5, 100, 100, null);
+        g.drawImage(getImage(berry.SRC), paintX + (int) chatWidth - 110, paintY + 5, 100, 100, null);
         g.setColor(Constants.PAINT_COLOR);
         g.setFont(font);
 
@@ -134,5 +138,13 @@ public class Main extends Script implements Painting {
             General.println(name + " not loaded. ");
         }
         return null;
+    }
+
+    @Override
+    public void passArguments(HashMap<String, String> arguments) {
+        String type = arguments.get("custom_input");
+
+        General.println("ARG: " + type + Constants.Berries.valueOf(type));
+        berry = new Berry(Constants.Berries.valueOf(type));
     }
 }
