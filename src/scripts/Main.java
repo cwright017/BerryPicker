@@ -8,6 +8,7 @@ import org.tribot.api2007.types.RSInterface;
 import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Arguments;
+import org.tribot.script.interfaces.MouseActions;
 import org.tribot.script.interfaces.Painting;
 import org.tribot.script.interfaces.Starting;
 import org.yaml.snakeyaml.scanner.Constant;
@@ -33,7 +34,7 @@ import java.util.HashMap;
  */
 
 @ScriptManifest(authors = "CWright", name = "Cadava Picker", category = "Gathering")
-public class Main extends Script implements Painting, Arguments, Starting {
+public class Main extends Script implements Painting, Arguments, Starting, MouseActions {
     private ArrayList<Node> Nodes = new ArrayList<>();
     private final RenderingHints aa = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -43,6 +44,9 @@ public class Main extends Script implements Painting, Arguments, Starting {
     private double chatY = 0;
     private double chatWidth = 0;
     private double chatHeight = 0;
+    private Rectangle chatRect;
+
+    private boolean showPaint = true;
 
     private BufferedImage image;
     private Berry berry;
@@ -116,6 +120,10 @@ public class Main extends Script implements Painting, Arguments, Starting {
 
         Font font = new Font("Verdana", Font.BOLD, 12);
 
+        if (!showPaint) {
+            return;
+        }
+
         RSInterface chat = Interfaces.get(162, 59);
         if (chat == null) {
             return;
@@ -125,6 +133,8 @@ public class Main extends Script implements Painting, Arguments, Starting {
         chatY = chat.getAbsoluteBounds().getY();
         chatWidth = chat.getAbsoluteBounds().getWidth();
         chatHeight = chat.getAbsoluteBounds().getHeight();
+
+        chatRect = new Rectangle(chat.getAbsoluteBounds());
 
         int paintY = (int) chatY;
         int paintX = (int) chatX;
@@ -174,5 +184,27 @@ public class Main extends Script implements Painting, Arguments, Starting {
         }
 
         berry = new Berry(berryType);
+    }
+
+    @Override
+    public void mouseMoved(Point point, boolean b) {
+
+    }
+
+    @Override
+    public void mouseDragged(Point point, int i, boolean b) {
+
+    }
+
+    @Override
+    public void mouseReleased(Point point, int i, boolean b) {
+
+    }
+
+    @Override
+    public void mouseClicked(Point point, int i, boolean b) {
+        if (chatRect.contains(point)) {
+            showPaint = !showPaint;
+        }
     }
 }
