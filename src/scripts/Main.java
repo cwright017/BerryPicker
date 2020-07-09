@@ -1,5 +1,6 @@
 package scripts;
 
+import com.sun.tools.javah.Gen;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.Interfaces;
@@ -44,6 +45,7 @@ public class Main extends Script implements Painting, Arguments {
     @Override
     public void run() {
         if(berry == null) {
+            General.println("Invalid berry selected");
             return;
         }
 
@@ -144,7 +146,6 @@ public class Main extends Script implements Painting, Arguments {
     public void passArguments(HashMap<String, String> arguments) {
         String type = arguments.get("custom_input");
 
-        General.println("ARG: " + type + Constants.Berries.valueOf(type));
         berry = new Berry(Constants.Berries.valueOf(type));
     }
 }

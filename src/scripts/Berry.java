@@ -53,7 +53,7 @@ public class Berry {
                 (bush -> (bush.getID() == BUSH_2 || bush.getID() == BUSH_1)));
     }
 
-    public boolean isInBushArea() {
+    public boolean isPlayerInBushArea() {
         return AREA.contains(Player.getPosition());
     }
 

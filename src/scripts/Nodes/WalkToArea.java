@@ -21,7 +21,7 @@ public class WalkToArea extends Node {
     }
 
     private boolean shouldWalkToBush() {
-        return !Inventory.isFull() && !berry.isInBushArea();
+        return !Inventory.isFull() && !berry.isPlayerInBushArea();
     }
 
     private void enableRun() {
@@ -47,13 +47,13 @@ public class WalkToArea extends Node {
     private boolean walkToBushes() {
         walker.walkTo(Constants.bushArea.getRandomTile(), () -> {
             enableRun();
-            if (!berry.isInBushArea()) {
+            if (!berry.isPlayerInBushArea()) {
                 return WalkingCondition.State.CONTINUE_WALKER;
             }
             return WalkingCondition.State.EXIT_OUT_WALKER_SUCCESS;
         });
 
-        return Timing.waitCondition(() -> berry.isInBushArea(), General.random(8000, 9000));
+        return Timing.waitCondition(() -> berry.isPlayerInBushArea(), General.random(8000, 9000));
     }
 
     @Override

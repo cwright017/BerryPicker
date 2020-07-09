@@ -14,7 +14,7 @@ public class HopWorld extends Node {
 
     @Override
     public boolean validate() {
-        return berry.isInBushArea() && berry.getBushes().length == 0;
+        return berry.isPlayerInBushArea() && berry.getBushes().length == 0;
     }
 
     @Override
