@@ -9,8 +9,12 @@ import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Arguments;
 import org.tribot.script.interfaces.Painting;
+import org.tribot.script.interfaces.Starting;
+import org.yaml.snakeyaml.scanner.Constant;
+import scripts.GUI.GUI;
 import scripts.Nodes.*;
 import scripts.Utils.Constants;
+import scripts.Utils.Utils;
 import scripts.dax_api.api_lib.DaxWalker;
 import scripts.dax_api.api_lib.models.DaxCredentials;
 import scripts.dax_api.api_lib.models.DaxCredentialsProvider;
@@ -29,7 +33,7 @@ import java.util.HashMap;
  */
 
 @ScriptManifest(authors = "CWright", name = "Cadava Picker", category = "Gathering")
-public class Main extends Script implements Painting, Arguments {
+public class Main extends Script implements Painting, Arguments, Starting {
     private ArrayList<Node> Nodes = new ArrayList<>();
     private final RenderingHints aa = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -40,14 +44,35 @@ public class Main extends Script implements Painting, Arguments {
     private double chatWidth = 0;
     private double chatHeight = 0;
 
+    private BufferedImage image;
     private Berry berry;
 
     @Override
+    public void onStart() {
+        GUI gui = new GUI();
+        gui.setVisible(true);
+
+        while(gui.isShowing()) {
+            General.sleep(100);
+        }
+
+        General.println("Closed");
+
+        berry = new Berry(gui.selectedBerry);
+
+        gui.dispose();
+    }
+
+    @Override
     public void run() {
+        General.println("Berry: " + berry.NAME);
+
         if(berry == null) {
             General.println("Invalid berry selected");
             return;
         }
+
+        image = Utils.getImage(berry.SRC);
 
         startTime = Timing.currentTimeMillis();
 
@@ -108,7 +133,7 @@ public class Main extends Script implements Painting, Arguments {
         // Draw banked items
         g.setColor(new Color(0,0, 0, 60));
         g.fillRect(paintX, 45, 100, 35);
-        g.drawImage(getImage(berry.SRC), paintX + 10, 50, 25, 25, null);
+        g.drawImage(image, paintX + 10, 50, 25, 25, null);
 
         g.setColor(Color.WHITE);
         g.drawString("" + (berry.totalInBank + berry.totalInInv), paintX + 45, 70 );
@@ -118,7 +143,7 @@ public class Main extends Script implements Painting, Arguments {
         g.fillRect(paintX, paintY, (int) chatWidth, (int) chatHeight);
 
         // Draw paint
-        g.drawImage(getImage(berry.SRC), paintX + (int) chatWidth - 110, paintY + 5, 100, 100, null);
+        g.drawImage(image, paintX + (int) chatWidth - 110, paintY + 5, 100, 100, null);
         g.setColor(Constants.PAINT_COLOR);
         g.setFont(font);
 
@@ -132,20 +157,22 @@ public class Main extends Script implements Painting, Arguments {
         return (((int) ((gained) * 3600000D / (System.currentTimeMillis() - startTime))) + "");
     }
 
-    public BufferedImage getImage(String name) {
-        try {
-            General.println("Loading image: " + name);
-            return ImageIO.read(new URL(name));
-        } catch (IOException e) {
-            General.println(name + " not loaded. ");
-        }
-        return null;
-    }
-
     @Override
     public void passArguments(HashMap<String, String> arguments) {
         String type = arguments.get("custom_input");
 
-        berry = new Berry(Constants.Berries.valueOf(type));
+        General.println("Type: " + type);
+
+        if(type == "") {
+            return;
+        }
+
+        Constants.Berries berryType = Constants.Berries.valueOf(type);
+
+        if(berryType == null) {
+            return;
+        }
+
+        berry = new Berry(berryType);
     }
 }
