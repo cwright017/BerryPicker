@@ -44,6 +44,10 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
 
     @Override
     public void onStart() {
+        if(berry != null) {
+            return; // Arg set so don't show GUI
+        }
+
         GUI gui = new GUI();
         gui.setVisible(true);
 
@@ -111,10 +115,6 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
 
         Font font = new Font("Verdana", Font.BOLD, 12);
 
-        if (!showPaint) {
-            return;
-        }
-
         RSInterface chat = Interfaces.get(162, 59);
         if (chat == null) {
             return;
@@ -133,6 +133,10 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
 
         g.setColor(Color.WHITE);
         g.drawString("" + (berry.totalInBank + berry.totalInInv), paintX + 45, 70 );
+
+        if (!showPaint) {
+            return;
+        }
 
         // Draw chat BG
         g.setColor(Constants.PAINT_BG_COLOR);
