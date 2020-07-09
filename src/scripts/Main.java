@@ -1,6 +1,5 @@
 package scripts;
 
-import com.sun.tools.javah.Gen;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.Interfaces;
@@ -11,7 +10,6 @@ import org.tribot.script.interfaces.Arguments;
 import org.tribot.script.interfaces.MouseActions;
 import org.tribot.script.interfaces.Painting;
 import org.tribot.script.interfaces.Starting;
-import org.yaml.snakeyaml.scanner.Constant;
 import scripts.GUI.GUI;
 import scripts.Nodes.*;
 import scripts.Utils.Constants;
@@ -20,11 +18,8 @@ import scripts.dax_api.api_lib.DaxWalker;
 import scripts.dax_api.api_lib.models.DaxCredentials;
 import scripts.dax_api.api_lib.models.DaxCredentialsProvider;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,17 +28,13 @@ import java.util.HashMap;
  * @author CWright
  */
 
-@ScriptManifest(authors = "CWright", name = "Cadava Picker", category = "Gathering")
+@ScriptManifest(authors = "CWright", name = "Berry Picker", category = "Gathering")
 public class Main extends Script implements Painting, Arguments, Starting, MouseActions {
     private ArrayList<Node> Nodes = new ArrayList<>();
     private final RenderingHints aa = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     private long startTime = 0;
 
-    private double chatX = 0;
-    private double chatY = 0;
-    private double chatWidth = 0;
-    private double chatHeight = 0;
     private Rectangle chatRect;
 
     private boolean showPaint = true;
@@ -60,7 +51,7 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
             General.sleep(100);
         }
 
-        General.println("Closed");
+        General.println("GUI Closed");
 
         berry = new Berry(gui.selectedBerry);
 
@@ -69,7 +60,7 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
 
     @Override
     public void run() {
-        General.println("Berry: " + berry.NAME);
+        General.println("Berry selected: " + berry.NAME);
 
         if(berry == null) {
             General.println("Invalid berry selected");
@@ -129,15 +120,10 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
             return;
         }
 
-        chatX = chat.getAbsoluteBounds().getX();
-        chatY = chat.getAbsoluteBounds().getY();
-        chatWidth = chat.getAbsoluteBounds().getWidth();
-        chatHeight = chat.getAbsoluteBounds().getHeight();
-
         chatRect = new Rectangle(chat.getAbsoluteBounds());
 
-        int paintY = (int) chatY;
-        int paintX = (int) chatX;
+        int paintY = (int) chatRect.getY();
+        int paintX = (int) chatRect.getX();
         int paintYGap = 25;
 
         // Draw banked items
@@ -150,10 +136,10 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
 
         // Draw chat BG
         g.setColor(Constants.PAINT_BG_COLOR);
-        g.fillRect(paintX, paintY, (int) chatWidth, (int) chatHeight);
+        g.fill(chatRect);
 
         // Draw paint
-        g.drawImage(image, paintX + (int) chatWidth - 110, paintY + 5, 100, 100, null);
+        g.drawImage(image, paintX + (int) chatRect.getWidth() - 110, paintY + 5, 100, 100, null);
         g.setColor(Constants.PAINT_COLOR);
         g.setFont(font);
 
@@ -171,7 +157,7 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
     public void passArguments(HashMap<String, String> arguments) {
         String type = arguments.get("custom_input");
 
-        General.println("Type: " + type);
+        General.println("ARG passed: " + type);
 
         if(type == "") {
             return;
