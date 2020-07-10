@@ -1,6 +1,5 @@
 package scripts.GUI;
 
-import org.tribot.api.General;
 import scripts.Utils.Constants;
 
 import javax.swing.*;
@@ -26,7 +25,6 @@ public class GUI extends JFrame {
             button1 = new JButton(new ImageIcon(new URL(Constants.REDBERRY_SRC)));
             button1.setToolTipText("Redberry");
             button1.addActionListener((ActionEvent e) -> {
-                General.println("CLICK: " + e.getActionCommand());
                 selectedBerry = Constants.Berries.REDBERRY;
 
                 this.setVisible(false);
@@ -36,7 +34,6 @@ public class GUI extends JFrame {
             button2 = new JButton(new ImageIcon(new URL(Constants.CADAVA_BERRY_SRC)));
             button2.setToolTipText("Cadava Berry");
             button2.addActionListener((ActionEvent e) -> {
-                General.println("CLICK: " + e.getActionCommand());
                 selectedBerry = Constants.Berries.CADAVA_BERRY;
 
                 this.setVisible(false);

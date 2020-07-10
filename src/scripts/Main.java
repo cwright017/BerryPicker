@@ -10,6 +10,8 @@ import org.tribot.script.interfaces.Arguments;
 import org.tribot.script.interfaces.MouseActions;
 import org.tribot.script.interfaces.Painting;
 import org.tribot.script.interfaces.Starting;
+import scripts.Debug.Debug;
+import scripts.Debug.DebugLevel;
 import scripts.GUI.GUI;
 import scripts.Nodes.*;
 import scripts.Utils.Constants;
@@ -42,8 +44,12 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
     private BufferedImage image;
     private Berry berry;
 
+    private Debug debug = Debug.getInstance();
+
     @Override
     public void onStart() {
+        Debug.setLevel(DebugLevel.INFO);
+
         if(berry != null) {
             return; // Arg set so don't show GUI
         }
@@ -55,7 +61,7 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
             General.sleep(100);
         }
 
-        General.println("GUI Closed");
+        debug.info("GUI Closed");
 
         berry = new Berry(gui.selectedBerry);
 
@@ -64,10 +70,10 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
 
     @Override
     public void run() {
-        General.println("Berry selected: " + berry.NAME);
+        debug.info("Berry selected: " + berry.NAME);
 
         if(berry == null) {
-            General.println("Invalid berry selected");
+            debug.error("Invalid berry selected");
             return;
         }
 
@@ -161,7 +167,7 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
     public void passArguments(HashMap<String, String> arguments) {
         String type = arguments.get("custom_input");
 
-        General.println("ARG passed: " + type);
+        debug.info("ARG passed: " + type);
 
         if(type == "") {
             return;

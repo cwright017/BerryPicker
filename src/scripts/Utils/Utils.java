@@ -1,8 +1,8 @@
 package scripts.Utils;
 
-import org.tribot.api.General;
 import org.tribot.api2007.Objects;
 import org.tribot.api2007.types.RSObject;
+import scripts.Debug.Debug;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -13,13 +13,14 @@ public class Utils {
     public static RSObject[] getBankBooths() {
         return Objects.findNearest(20, "Bank booth");
     }
+    private static Debug debug = Debug.getInstance();
 
     public static BufferedImage getImage(String name) {
         try {
-            General.println("Loading image: " + name);
+            debug.log("Loading image: " + name);
             return ImageIO.read(new URL(name));
         } catch (IOException e) {
-            General.println(name + " not loaded. ");
+            debug.error(name + " not loaded. ");
         }
         return null;
     }

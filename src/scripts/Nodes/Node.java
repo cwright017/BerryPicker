@@ -1,10 +1,12 @@
 package scripts.Nodes;
 
-import org.tribot.api.General;
+import scripts.Debug.Debug;
 
 public abstract class Node {
+    private Debug debug = Debug.getInstance();
+
     public void printStatus() {
-        General.println("Executing " + this.getClass().getName());
+        debug.log("Executing " + this.getClass().getName());
     };
     public abstract boolean validate();
     public abstract void execute();

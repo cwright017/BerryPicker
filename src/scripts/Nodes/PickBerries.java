@@ -8,9 +8,11 @@ import org.tribot.api2007.WebWalking;
 import org.tribot.api2007.types.RSItem;
 import org.tribot.api2007.types.RSObject;
 import scripts.Berry;
+import scripts.Debug.Debug;
 
 public class PickBerries extends Node {
     private Berry berry;
+    private Debug debug = Debug.getInstance();
 
     public PickBerries(Berry berry) {
         this.berry = berry;
