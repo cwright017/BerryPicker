@@ -4,6 +4,7 @@ import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.Interfaces;
 import org.tribot.api2007.types.RSInterface;
+import org.tribot.api2007.types.RSObject;
 import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Arguments;
@@ -45,6 +46,8 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
     private Berry berry;
 
     private Debug debug = Debug.getInstance();
+
+    private AntiBan antiBan;
 
     @Override
     public void onStart() {
@@ -88,13 +91,15 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
             }
         });
 
+        antiBan = new AntiBan(berry);
+
         Collections.addAll(
             Nodes,
             new Setup(),
             new LoginUser(),
             new Bank(berry),
-            new PickBerries(berry),
-            new WalkToArea(berry),
+            new PickBerries(berry, antiBan),
+            new WalkToArea(berry, antiBan),
             new HopWorld(berry)
         );
 
@@ -116,6 +121,10 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
     @Override
     public void onPaint(Graphics gg)
     {
+        if(berry == null) {
+            return;
+        }
+
         Graphics2D g = (Graphics2D) gg;
         g.setRenderingHints(aa);
 
@@ -139,6 +148,18 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
 
         g.setColor(Color.WHITE);
         g.drawString("" + (berry.totalInBank + berry.totalInInv), paintX + 45, 70 );
+
+        // Highlight bushes
+        RSObject[] bushes = berry.getBushes();
+        for (int i=0; i < bushes.length; i++) {
+            g.setColor(Color.YELLOW);
+
+            if (i == 0) {
+                g.setColor(Color.GREEN);
+            }
+
+            g.draw(bushes[i].getModel().getEnclosedArea());
+        }
 
         if (!showPaint) {
             return;
@@ -169,17 +190,16 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
 
         debug.info("ARG passed: " + type);
 
-        if(type == "") {
+        if(type.equals("")) {
             return;
         }
 
-        Constants.Berries berryType = Constants.Berries.valueOf(type);
-
-        if(berryType == null) {
-            return;
+        try {
+            Constants.Berries berryType = Constants.Berries.valueOf(type);
+            berry = new Berry(berryType);
+        } catch (IllegalArgumentException e) {
+            General.println("Invalid berry type passed");
         }
-
-        berry = new Berry(berryType);
     }
 
     @Override
@@ -199,6 +219,10 @@ public class Main extends Script implements Painting, Arguments, Starting, Mouse
 
     @Override
     public void mouseClicked(Point point, int i, boolean b) {
+        if (chatRect == null) {
+            return;
+        }
+
         if (chatRect.contains(point)) {
             showPaint = !showPaint;
         }

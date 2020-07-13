@@ -7,14 +7,17 @@ import org.tribot.api2007.Inventory;
 import org.tribot.api2007.WebWalking;
 import org.tribot.api2007.types.RSItem;
 import org.tribot.api2007.types.RSObject;
+import scripts.AntiBan;
 import scripts.Berry;
 import scripts.Debug.Debug;
 
 public class PickBerries extends Node {
     private Berry berry;
+    private AntiBan antiBan;
     private Debug debug = Debug.getInstance();
 
-    public PickBerries(Berry berry) {
+    public PickBerries(Berry berry, AntiBan antiBan) {
+        this.antiBan = antiBan;
         this.berry = berry;
     }
 
@@ -47,10 +50,11 @@ public class PickBerries extends Node {
         }
 
         Timing.waitCondition(() -> {
+            antiBan.hoverNextTarget();
+
             RSItem[] berries = Inventory.find(berry.ID);
             if (berries != null) {
                 berry.totalInInv = berries.length;
-
                 return berries.length > initialBerriesInInv.length;
             }
 

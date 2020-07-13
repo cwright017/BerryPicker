@@ -4,6 +4,7 @@ import org.tribot.api2007.Objects;
 import org.tribot.api2007.Player;
 import org.tribot.api2007.types.RSArea;
 import org.tribot.api2007.types.RSObject;
+import scripts.Debug.Debug;
 import scripts.Utils.Constants;
 
 public class Berry {
@@ -22,6 +23,10 @@ public class Berry {
     public int totalCollected = 0;
 
     private int distanceToSearch = 15;
+
+    private Debug debug = Debug.getInstance();
+
+    private RSObject[] bushes;
 
     public Berry(Constants.Berries type) {
         switch (type) {
@@ -48,9 +53,15 @@ public class Berry {
     }
 
     public RSObject[] getBushes() {
-        return Objects.findNearest(
-                distanceToSearch,
-                (bush -> (bush.getID() == BUSH_2 || bush.getID() == BUSH_1)));
+        bushes = Objects.findNearest(
+                    distanceToSearch,
+                    (bush -> (bush.getID() == BUSH_2 || bush.getID() == BUSH_1)));
+
+        return bushes;
+    }
+
+    public void clearBushes() {
+        bushes = null;
     }
 
     public boolean isPlayerInBushArea() {

@@ -3,6 +3,7 @@ package scripts.Nodes;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.*;
+import scripts.AntiBan;
 import scripts.Berry;
 import scripts.Utils.Constants;
 import scripts.dax_api.api_lib.DaxWalker;
@@ -11,9 +12,11 @@ import scripts.dax_api.walker_engine.WalkingCondition;
 public class WalkToArea extends Node {
     private DaxWalker walker = DaxWalker.getInstance();
     private Berry berry;
+    private AntiBan antiBan;
 
-    public WalkToArea(Berry berry) {
+    public WalkToArea(Berry berry, AntiBan antiBan) {
         this.berry = berry;
+        this.antiBan = antiBan;
     }
 
     private boolean shouldBank() {
@@ -35,6 +38,8 @@ public class WalkToArea extends Node {
     private boolean walkToBank() {
         walker.getInstance().walkToBank(() -> {
             enableRun();
+            antiBan.doTimedMethods();
+
             if (!Banking.isInBank()) {
                 return WalkingCondition.State.CONTINUE_WALKER;
             }
@@ -47,6 +52,8 @@ public class WalkToArea extends Node {
     private boolean walkToBushes() {
         walker.walkTo(Constants.bushArea.getRandomTile(), () -> {
             enableRun();
+            antiBan.doTimedMethods();
+
             if (!berry.isPlayerInBushArea()) {
                 return WalkingCondition.State.CONTINUE_WALKER;
             }
